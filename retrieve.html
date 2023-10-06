@@ -1,0 +1,52 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrive Files</title>
+</head>
+
+<body>
+    <h1>Retrieve File from IPFS</h1>
+    
+    <input type="text" id="cidInput" placeholder="Enter IPFS CID">
+    <button onclick="retrieveFromIPFS()">Retrieve</button>
+    <p id="retrieveStatus">File fetched from IPFS!</p>
+    <div id="fileContent"></div>
+
+    <script>
+        async function retrieveFromIPFS() {
+            const cidInput = document.getElementById('cidInput');
+            const retrieveStatus = document.getElementById('retrieveStatus');
+            const fileContent = document.getElementById('fileContent');
+            
+            if (!cidInput.value) {
+                retrieveStatus.innerHTML = 'No IPFS CID provided';
+                return;
+            }
+
+            try {
+                retrieveStatus.textContent = 'Retrieving...';
+
+                const response = await fetch(`https://ipfs.io/ipfs/${cidInput.value}`);
+
+                if (response.ok) {
+                    const data = await response.text();
+                    fileContent.textContent = data;
+                    retrieveStatus.textContent = 'File fetched from IPFS!';
+                } else {
+                    retrieveStatus.textContent = 'Error fetching from IPFS';
+                }
+            } catch (error) {
+                console.error('Error fetching from IPFS:', error);
+                retrieveStatus.textContent = 'Error fetching from IPFS';
+            }
+        }
+    </script>
+
+
+
+
+</body>
+
+</html>
