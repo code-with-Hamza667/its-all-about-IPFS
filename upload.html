@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload to Web3.Storage</title>
+</head>
+<body>
+    <h1>Upload File to Web3.Storage</h1>
+    
+    <input type="file" id="fileInput">
+    <button onclick="uploadToWeb3Storage()">Upload</button>
+
+    <p>Status: <span id="status">Idle</span></p>
+    <p>Web3.Storage CID: <span id="web3StorageCID"></span></p>
+   
+    <script>
+        async function uploadToWeb3Storage() {
+            const fileInput = document.getElementById('fileInput');
+            const status = document.getElementById('status');
+            const web3StorageCID = document.getElementById('web3StorageCID');
+
+            const selectedFile = fileInput.files[0];
+            if (!selectedFile) {
+                status.textContent = 'No file selected';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEY1MTRmQkZhZTg1OTc1ZDFhNzU2ZDg0MTUwMGM5MjYxOWRjQjViMDkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2OTY0NTE0MTM1OTYsIm5hbWUiOiJUZXN0SVBGUyJ9.ta8u-IomwPVQBzprY3h8oUeg0MAgaStyZuEnohRk9qM'; // Replace with your actual Web3.Storage token
+
+            try {
+                status.textContent = 'Uploading...';
+
+                const response = await fetch('https://api.web3.storage/upload', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    web3StorageCID.textContent = `ipfs://${data.cid}`;
+                    status.textContent = 'File uploaded to Web3.Storage!';
+                } else {
+                    status.textContent = 'Error uploading to Web3.Storage';
+                }
+            } catch (error) {
+                console.error('Error uploading to Web3.Storage:', error);
+                status.textContent = 'Error uploading to Web3.Storage';
+            }
+        }
+
+
+    </script>
+</body>
+</html>
